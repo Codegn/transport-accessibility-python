@@ -34,8 +34,6 @@ def calculate_acc_from_vs_matrix(
     execution_time = end_time - start_time
     logger.info("Execution time: {:.2f} seconds".format(execution_time))
 
-    
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     app()
