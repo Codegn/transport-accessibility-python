@@ -1,4 +1,4 @@
-from transport_accessibility.core.acc_types import AccessibilityType
+from src.domain.accessibility_types import AccessibilityType
 from transport_accessibility.core.readers.vs_matrix_reader import ORIGIN_ZONE_COLUMN, TOTAL_TIME_COLUMN
 from transport_accessibility.core.readers.orides_reader import DESTINATION_TRIPS_COLUMN
 import pandas as pd

@@ -2,11 +2,11 @@ import os
 import typer
 import logging
 from transport_accessibility.core.models.acc_model import AccessibilityModel
-from transport_accessibility.core.acc_types import AccessibilityType
+from src.domain.accessibility_types import AccessibilityType
 from transport_accessibility.core.readers.vs_matrix_reader import VSMatrixReader
 from transport_accessibility.core.readers.orides_reader import OridesReader
 from transport_accessibility.core.data_mergers.vs_matrix_orides_merger import VSMatrixOridesMerger
-from transport_accessibility.utils import save_df_to_csv
+from src.application.utils import save_df_to_csv
 import time
 
 app = typer.Typer()

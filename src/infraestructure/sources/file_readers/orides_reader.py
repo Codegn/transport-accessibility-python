@@ -1,47 +1,39 @@
 import pandas as pd
 from src.infraestructure.sources.file_readers.basic_csv_reader import BasicCSVReader
-
-ZONE_COLUMN = "zone"
-TRIPS_TYPE_COLUMN = "trip_type"
-TRIPS_COLUMN = "trips"
-DESTINATION_TRIPS_COLUMN = "destination_trips"
-
-ORIDES_COLUMNS = [
-    ZONE_COLUMN,
-    TRIPS_TYPE_COLUMN,
-    TRIPS_COLUMN
-]
-
-DESTINATION_TYPE = 1
+from src.infraestructure.data_models.orides_data import OridesData
 
 class OridesReader(BasicCSVReader):
 
-    def _read_csv_file(self):
+    def read_csv_file(self):
         self.df = pd.read_csv(
             self.file_path,
             skiprows=0,
             header=None,
-            names = ORIDES_COLUMNS,
+            names = [
+                OridesData.zone_column, 
+                OridesData.trip_type_column, 
+                OridesData.trips_column
+                ],
             sep='\s+',
             engine='python'
         )
 
-    def _filter_destination_rows(self):
+        return self.df
+
+    def filter_destination_rows(self):
         """
         Filters the rows with destination trips.
         """
-        self.df = self.df[self.df[TRIPS_TYPE_COLUMN] == DESTINATION_TYPE].copy()
+        self.df = self.df[self.df[OridesData.trip_type_column] == OridesData.destination_type_id].copy()
 
-    def _rename_trips_column(self):
+    def rename_trips_column(self):
         """
         Renames the trips column to destination_trips.
         """
-        self.df = self.df.rename(columns={TRIPS_COLUMN: DESTINATION_TRIPS_COLUMN})
+        self.df = self.df.rename(columns={OridesData.trips_column: OridesData.destination_trips_column})
 
     def process_data(self):
         self._read_csv_file()
         self._filter_destination_rows()
         self._rename_trips_column()
         return self.df
-
-    
