@@ -1,8 +1,7 @@
 import pandas as pd
 from transport_accessibility.core.transport_modes import TransportMode
 from transport_accessibility.core.value_objects import MAX_TOTAL_TIME, MIN_TOTAL_TIME
-from transport_accessibility.core.readers.basic_csv_reader import BasicCSVReader
-from enum import Enum
+from src.infraestructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
 VS_MATRIX_COLUMNS = [
     "H",

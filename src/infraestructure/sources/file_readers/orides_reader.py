@@ -1,5 +1,5 @@
 import pandas as pd
-from transport_accessibility.core.readers.basic_csv_reader import BasicCSVReader
+from src.infraestructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
 ZONE_COLUMN = "zone"
 TRIPS_TYPE_COLUMN = "trip_type"
