@@ -4,7 +4,7 @@ from src.domain.accessibility_types import AccessibilityType
 from src.domain.impedance_matrices.entities.impedance_matrix import ImpedanceMatrix
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
 from src.domain.transport_modes import TransportMode
-from src.infraestructure.components.accessibility_procesor import AccessibilityProcessor
+from src.infrastructure.components.accessibility_procesor import AccessibilityProcessor
 
 
 class AccessibilityRepositoryImpl(AccessibilityRepository):

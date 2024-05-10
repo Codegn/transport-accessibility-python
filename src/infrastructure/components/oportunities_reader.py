@@ -2,7 +2,7 @@ from pathlib import Path
 
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
 from src.domain.oportunities.entities.oportunities_source_type import OportunitiesSourceType
-from src.infraestructure.sources.file_readers.orides_reader import OridesReader
+from src.infrastructure.sources.file_readers.orides_reader import OridesReader
 
 class OportunitiesReader:
 

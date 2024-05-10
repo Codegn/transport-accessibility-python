@@ -4,7 +4,7 @@ import pandas as pd
 from src.domain.acc_model.entities.acc_results import AccessibilityResults
 from src.domain.acc_model.repository.acc_model_repository import AccModelRepository
 from src.domain.sv_matrix.entities.sv_matrix import ProcessedSVMatrix
-from src.infraestructure.data_models.sv_matrix_data import ProcessedSVMatrixData
+from src.infrastructure.data_models.sv_matrix_data import ProcessedSVMatrixData
 
 class AccModelRepositoryImpl(AccModelRepository):
     

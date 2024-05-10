@@ -1,6 +1,6 @@
 import pandas as pd
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
-from src.infraestructure.sources.file_readers.basic_csv_reader import BasicCSVReader
+from src.infrastructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
 ZONE_COLUMN = "zone"
 TRIP_TYPE_COLUMN = "trip_type"
