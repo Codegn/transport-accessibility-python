@@ -2,6 +2,7 @@ from src.domain.accessibility.entities.accessibility_by_zone import Accessibilit
 from src.domain.accessibility.repository.accessibility_repository import AccessibilityRepository
 from src.domain.impedance_matrices.entities.impedance_matrix import ImpedanceMatrix
 from src.domain.accessibility_types import AccessibilityType
+from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
 from src.domain.transport_modes import TransportMode
 
 class GetAccessibilityByZone:
@@ -11,13 +12,15 @@ class GetAccessibilityByZone:
 
     def get(
             self, 
-            impedance_matrix: ImpedanceMatrix, 
-            AccessibilityType: AccessibilityType,
+            impedance_matrix: ImpedanceMatrix,
+            oportunities_by_zone: OportunitiesByZone,
+            accessibility_type: AccessibilityType,
             transport_mode: TransportMode
             ) -> AccessibilityByZone:
 
         self.accessibility_repository.get_accessibility_by_zone(
-            AccessibilityType, 
+            accessibility_type, 
             transport_mode,
-            impedance_matrix
+            impedance_matrix,
+            oportunities_by_zone
         )

@@ -1,20 +1,17 @@
-import pandas as pd
-from src.domain.orides.entities.orides import Orides, ProcessedOrides
-from src.domain.orides.repository.orides_repository import OridesRepository
-from src.infraestructure.sources.file_readers.orides_reader import OridesReader
+from pathlib import Path
+from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
+from src.domain.oportunities.entities.oportunities_source_type import OportunitiesSourceType
+from src.domain.oportunities.repository.oportunities_repository import OportunitiesRepository
+from src.infraestructure.components.oportunities_reader import OportunitiesReader
 
 
-class OridesRepositoryImpl(OridesRepository):
+class OportunitiesRepositoryImpl(OportunitiesRepository):
 
-    def __init__(self, orides_reader: OridesReader):
-        self.orides_reader = orides_reader
+    def __init__(self, oportunities_reader: OportunitiesReader):
+        self.oportunities_reader = oportunities_reader
 
-    def get_from_file(self, file_path) -> Orides:
-        df = self.orides_reader.read_csv_file(file_path)
-        return Orides(df)
+    def get_oportunities_from_file(self, file_path: Path, oportunities_source: OportunitiesSourceType) -> OportunitiesByZone:
+        return self.oportunities_reader.read_oportunities(file_path, oportunities_source)
 
-    def process(self, orides: Orides) -> ProcessedOrides:
-        pass
-
-    def get_data(self) -> pd.DataFrame:
+    def save_oportunities_to_file(self, output_path: Path, oportunities_by_zone: OportunitiesByZone) -> None:
         raise NotImplementedError
