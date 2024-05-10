@@ -1,5 +1,5 @@
 from enum import Enum
 
 class AccessibilityType(Enum):
-    umbral = "umbral"
-    loglog = "loglog"
+    UMBRAL = "umbral"
+    LOGLOG = "loglog"

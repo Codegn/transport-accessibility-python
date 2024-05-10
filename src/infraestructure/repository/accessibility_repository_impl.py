@@ -4,6 +4,7 @@ from src.domain.accessibility_types import AccessibilityType
 from src.domain.impedance_matrices.entities.impedance_matrix import ImpedanceMatrix
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
 from src.domain.transport_modes import TransportMode
+from src.infraestructure.components.accessibility_procesor import AccessibilityProcessor
 
 
 class AccessibilityRepositoryImpl(AccessibilityRepository):
@@ -19,6 +20,4 @@ class AccessibilityRepositoryImpl(AccessibilityRepository):
         oportunities_by_zone: OportunitiesByZone
         ) -> AccessibilityByZone:
 
-        self.accessibility_processor(accessibility_type, transport_mode, impedance_matrix, oportunities_by_zone)
-
-        raise NotImplementedError
+        return self.accessibility_processor.process(accessibility_type, transport_mode, impedance_matrix, oportunities_by_zone)

@@ -18,7 +18,7 @@ class GetAccessibilityByZone:
             transport_mode: TransportMode
             ) -> AccessibilityByZone:
 
-        self.accessibility_repository.get_accessibility_by_zone(
+        return self.accessibility_repository.get_accessibility_by_zone(
             accessibility_type, 
             transport_mode,
             impedance_matrix,

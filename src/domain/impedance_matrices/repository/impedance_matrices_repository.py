@@ -12,5 +12,5 @@ class ImpedanceMatricesRepository(ABC):
         pass
 
     @abstractmethod
-    def get_distance_matrix_from_file(self, file_path: Path) -> DistanceMatrix:
+    def get_distance_matrix_from_file(self, file_path: Path, impedance_matrix_source: ImpedanceMatrixSourceType) -> DistanceMatrix:
         pass
