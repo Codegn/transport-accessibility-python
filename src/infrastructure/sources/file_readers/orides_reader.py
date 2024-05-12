@@ -38,7 +38,7 @@ class OridesReader(BasicCSVReader):
         """
         Renames the trips column to destination_trips.
         """
-        self.df = self.df.rename(columns={DESTINATION_TRIPS_COLUMN: DESTINATION_TRIPS_COLUMN})
+        self.df = self.df.rename(columns={TRIPS_COLUMN: DESTINATION_TRIPS_COLUMN})
 
     def _from_df_to_oportunities_by_zone(self) -> OportunitiesByZone:
         """

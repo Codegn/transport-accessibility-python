@@ -1,8 +1,10 @@
+from datetime import timedelta
 import pandas as pd
 
 from src.application.accessibility_calculator.accessibility_calculator import MAX_TOTAL_TIME, MIN_TOTAL_TIME
 from src.domain.impedance_matrices.entities.travel_time_matrix import TravelTimeMatrix
 from src.domain.transport_modes import TransportMode
+from src.domain.zone import Zone
 from src.infrastructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
 VS_MATRIX_COLUMNS = ["H", "MODO ", ' "ZO"', ' "ZD"', "T_CAMI", "T_ESPE", "T_VIAJ", "VIAJES"]
@@ -99,7 +101,7 @@ class SVMatrixReader(BasicCSVReader):
         Converts a pandas DataFrame to a TravelTimeMatrix object.
         """
         travel_time_matrix_dict = {
-            (row[ORIGIN_ZONE_COLUMN], row[DESTINATION_ZONE_COLUMN]): row[TOTAL_TIME_COLUMN]
+            (Zone(row[ORIGIN_ZONE_COLUMN]), Zone(row[DESTINATION_ZONE_COLUMN])): timedelta(minutes=row[TOTAL_TIME_COLUMN])
             for _, row in self.df.iterrows()
         }
         return TravelTimeMatrix(travel_time_matrix_dict)
