@@ -1,6 +1,8 @@
-from abc import ABC
 from dataclasses import dataclass
+from typing import Dict, Tuple, Any
+
+from src.domain.zone import Zone
 
 @dataclass
-class ImpedanceMatrix(ABC):
-    pass
+class ImpedanceMatrix():
+    data: Dict[Tuple[Zone, Zone], Any]

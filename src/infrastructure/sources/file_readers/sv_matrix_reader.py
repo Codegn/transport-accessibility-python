@@ -1,18 +1,11 @@
 import pandas as pd
-from transport_accessibility.core.transport_modes import TransportMode
-from transport_accessibility.core.value_objects import MAX_TOTAL_TIME, MIN_TOTAL_TIME
+
+from src.application.accessibility_calculator.accessibility_calculator import MAX_TOTAL_TIME, MIN_TOTAL_TIME
+from src.domain.impedance_matrices.entities.travel_time_matrix import TravelTimeMatrix
+from src.domain.transport_modes import TransportMode
 from src.infrastructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
-VS_MATRIX_COLUMNS = [
-    "H",
-    "MODO ",
-    ' "ZO"',
-    ' "ZD"',
-    "T_CAMI",
-    "T_ESPE",
-    "T_VIAJ",
-    "VIAJES"
-]
+VS_MATRIX_COLUMNS = ["H", "MODO ", ' "ZO"', ' "ZD"', "T_CAMI", "T_ESPE", "T_VIAJ", "VIAJES"]
 
 HOUR_COLUMN = "hour"
 MODE_COLUMN = "mode"
@@ -31,43 +24,29 @@ VS_MATRIX_COLUMNS_RENAMED = [
     WALK_TIME_COLUMN,
     WAIT_TIME_COLUMN,
     TRAVEL_TIME_COLUMN,
-    TRIPS_COLUMN
+    TRIPS_COLUMN,
 ]
 
 TOTAL_TIME_COLUMN = "total_time"
 
-TPUB_MODES = [
-    'cam', 
-    'busT', 
-    'txc', 
-    'metro', 
-    'metbusT', 
-    'mettxc'
-]
+TPUB_MODES = ["cam", "busT", "txc", "metro", "metbusT", "mettxc"]
 
-TPRIV_MODES = [
-    'cam',
-    'ach', 
-    'aac', 
-    'taxi'
-]
+TPRIV_MODES = ["cam", "ach", "aac", "taxi"]
 
-TRANSPORT_MODES_DICT = {
-    TransportMode.public: TPUB_MODES,
-    TransportMode.private: TPRIV_MODES
-}
+TRANSPORT_MODES_DICT = {TransportMode.PUBLIC: TPUB_MODES, TransportMode.PRIVATE: TPRIV_MODES}
 
 FIRST_PERIOD_HOUR = 1
 SECOND_PERIOD_HOUR = 2
 
-class VSMatrixReader(BasicCSVReader):
+
+class SVMatrixReader(BasicCSVReader):
 
     def _filter_columns(self, columns: list[str]):
         """
         Filters selected columns from a DataFrame.
         """
         self.df = self.df[columns].copy()
-    
+
     def _rename_columns(self, columns: dict[str, str]):
         """
         Renames columns in a DataFrame.
@@ -90,22 +69,42 @@ class VSMatrixReader(BasicCSVReader):
         """
         Groups a DataFrame by origin_zone and destination_zone and calculates the minimum travel time.
         """
-        self.df = self.df.groupby([ORIGIN_ZONE_COLUMN, DESTINATION_ZONE_COLUMN]).agg({TOTAL_TIME_COLUMN: "min", TRIPS_COLUMN: "sum"}).reset_index()
-    
+        self.df = (
+            self.df.groupby([ORIGIN_ZONE_COLUMN, DESTINATION_ZONE_COLUMN])
+            .agg({TOTAL_TIME_COLUMN: "min", TRIPS_COLUMN: "sum"})
+            .reset_index()
+        )
+
     def _calculate_total_time(self):
         """
         Calculates the total time of a trip.
         """
-        self.df[TOTAL_TIME_COLUMN] = self.df[WAIT_TIME_COLUMN] + self.df[WAIT_TIME_COLUMN] + self.df[TRAVEL_TIME_COLUMN]
+        self.df[TOTAL_TIME_COLUMN] = (
+            self.df[WAIT_TIME_COLUMN] + self.df[WAIT_TIME_COLUMN] + self.df[TRAVEL_TIME_COLUMN]
+        )
 
     def _total_time_corrections(self):
         """
         Applies corrections to the total time of a trip.
         """
-        self.df[TOTAL_TIME_COLUMN] = self.df[TOTAL_TIME_COLUMN].apply(lambda x: x if x <= MAX_TOTAL_TIME else MAX_TOTAL_TIME)
-        self.df[TOTAL_TIME_COLUMN] = self.df[TOTAL_TIME_COLUMN].apply(lambda x: x if x >= MIN_TOTAL_TIME else MIN_TOTAL_TIME)
+        self.df[TOTAL_TIME_COLUMN] = self.df[TOTAL_TIME_COLUMN].apply(
+            lambda x: x if x <= MAX_TOTAL_TIME else MAX_TOTAL_TIME
+        )
+        self.df[TOTAL_TIME_COLUMN] = self.df[TOTAL_TIME_COLUMN].apply(
+            lambda x: x if x >= MIN_TOTAL_TIME else MIN_TOTAL_TIME
+        )
 
-    def process_data(self, mode: TransportMode = TransportMode.public) -> pd.DataFrame:
+    def _from_df_to_travel_time_matrix(self) -> TravelTimeMatrix:
+        """
+        Converts a pandas DataFrame to a TravelTimeMatrix object.
+        """
+        travel_time_matrix_dict = {
+            (row[ORIGIN_ZONE_COLUMN], row[DESTINATION_ZONE_COLUMN]): row[TOTAL_TIME_COLUMN]
+            for _, row in self.df.iterrows()
+        }
+        return TravelTimeMatrix(travel_time_matrix_dict)
+
+    def read_and_process_travel_time_data(self, transport_mode: TransportMode) -> TravelTimeMatrix:
         """
         Runs the complete process of reading, filtering, renaming, grouping, calculating and correcting the data.
         """
@@ -113,9 +112,9 @@ class VSMatrixReader(BasicCSVReader):
         self._filter_columns(VS_MATRIX_COLUMNS)
         self._rename_columns(dict(zip(VS_MATRIX_COLUMNS, VS_MATRIX_COLUMNS_RENAMED)))
         self._filter_by_hour(FIRST_PERIOD_HOUR)
-        self._filter_by_transport_mode(mode)
+        self._filter_by_transport_mode(transport_mode)
         self._calculate_total_time()
         self._groupby_min_total_time()
         self._total_time_corrections()
-        return self.df
-    
+        travel_time_matrix = self._from_df_to_travel_time_matrix()
+        return travel_time_matrix

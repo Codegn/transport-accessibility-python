@@ -1,4 +1,6 @@
+from datetime import timedelta
 from pathlib import Path
+from src.domain.impedance_matrices.entities.distance import Distance
 from src.domain.impedance_matrices.entities.impedance_type import ImpedanceType
 from src.domain.accessibility.use_cases.get_accessibility_by_zone import GetAccessibilityByZone
 from src.domain.accessibility_types import AccessibilityType
@@ -24,17 +26,20 @@ class AccessibilityCalculator:
         self.get_impedance_matrix_from_source = get_impedance_matrix_from_source
         self.get_oportunities_from_source = get_oportunities_from_source
 
-
     def _get_impedance_matrix(
-        self, impedance_type: ImpedanceType, impedance_matrix_source: ImpedanceMatrixSourceType, file_path: Path
+        self,
+        impedance_type: ImpedanceType,
+        impedance_matrix_source: ImpedanceMatrixSourceType,
+        file_path: Path,
+        transport_mode: TransportMode,
     ):
         if impedance_type == ImpedanceType.DISTANCE:
             impedance_matrix = self.get_impedance_matrix_from_source.get_distance_matrix_from_file(
-                file_path, impedance_matrix_source
+                file_path, impedance_matrix_source, transport_mode
             )
         elif impedance_type == ImpedanceType.TIME:
             impedance_matrix = self.get_impedance_matrix_from_source.get_travel_time_matrix_from_file(
-                file_path, impedance_matrix_source
+                file_path, impedance_matrix_source, transport_mode
             )
         else:
             raise ValueError(f"Invalid impedance type: {impedance_type}")
@@ -48,14 +53,15 @@ class AccessibilityCalculator:
         impedance_matrix_source: ImpedanceMatrixSourceType,
         accessibility_type: AccessibilityType = AccessibilityType.UMBRAL,
         transport_mode: TransportMode = TransportMode.PUBLIC,
+        umbral: timedelta | Distance | None = None,
     ):
         impedance_matrix = self._get_impedance_matrix(
-            impedance_type, impedance_matrix_source, impedance_matrix_file_path
+            impedance_type, impedance_matrix_source, impedance_matrix_file_path, transport_mode
         )
         oportunities_by_zone = self.get_oportunities_from_source.get_from_file(
             oportunities_file_path, OportunitiesSourceType.ORIDES
         )
         accessibility = self.get_accessibility_by_zone.get(
-            impedance_matrix, oportunities_by_zone, accessibility_type, transport_mode
+            impedance_matrix, oportunities_by_zone, accessibility_type, umbral
         )
         return accessibility

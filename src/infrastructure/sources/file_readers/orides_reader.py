@@ -1,5 +1,7 @@
 import pandas as pd
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
+from src.domain.oportunities.entities.oportunity import Oportunity
+from src.domain.zone import Zone
 from src.infrastructure.sources.file_readers.basic_csv_reader import BasicCSVReader
 
 ZONE_COLUMN = "zone"
@@ -20,7 +22,7 @@ class OridesReader(BasicCSVReader):
                 TRIP_TYPE_COLUMN, 
                 TRIPS_COLUMN
                 ],
-            sep='\s+',
+            sep='\s+', # type: ignore
             engine='python'
         )
 
@@ -42,8 +44,11 @@ class OridesReader(BasicCSVReader):
         """
         Converts a pandas DataFrame to an OportunitiesByZone object.
         """
-        # TODO: Implement this method
-        raise NotImplementedError
+        oportunities_by_zone_dict = {
+            Zone(row[ZONE_COLUMN]): Oportunity(row[DESTINATION_TRIPS_COLUMN])
+            for _, row in self.df.iterrows()
+        }
+        return OportunitiesByZone(oportunities_by_zone_dict)
     
     def read_and_process_data(self) -> OportunitiesByZone:
         self._read_csv_file()
