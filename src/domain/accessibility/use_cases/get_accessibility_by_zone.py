@@ -1,11 +1,13 @@
 from datetime import timedelta
+
 from src.domain.accessibility.entities.accessibility_by_zone import AccessibilityByZone
-from src.domain.accessibility.repository.accessibility_repository import AccessibilityRepository
+from src.domain.accessibility.repository.accessibility_repository import (
+    AccessibilityRepository,
+)
+from src.domain.accessibility_types import AccessibilityType
 from src.domain.impedance_matrices.entities.distance import Distance
 from src.domain.impedance_matrices.entities.impedance_matrix import ImpedanceMatrix
-from src.domain.accessibility_types import AccessibilityType
 from src.domain.oportunities.entities.oportunities_by_zone import OportunitiesByZone
-from src.domain.transport_modes import TransportMode
 
 
 class GetAccessibilityByZone:

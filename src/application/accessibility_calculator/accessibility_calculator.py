@@ -1,12 +1,24 @@
 from datetime import timedelta
 from pathlib import Path
-from src.domain.impedance_matrices.entities.distance import Distance
-from src.domain.impedance_matrices.entities.impedance_type import ImpedanceType
-from src.domain.accessibility.use_cases.get_accessibility_by_zone import GetAccessibilityByZone
+
+from src.domain.accessibility.use_cases.get_accessibility_by_zone import (
+    GetAccessibilityByZone,
+)
+from src.domain.accessibility.use_cases.save_accessibility_by_zone_to_file import (
+    SaveAccessibilityByZoneToFile,
+)
 from src.domain.accessibility_types import AccessibilityType
-from src.domain.impedance_matrices.entities.impedance_matrix_source_type import ImpedanceMatrixSourceType
-from src.domain.impedance_matrices.use_cases.get_impedance_matrix_from_source import GetImpedanceMatrixFromSource
-from src.domain.oportunities.entities.oportunities_source_type import OportunitiesSourceType
+from src.domain.impedance_matrices.entities.distance import Distance
+from src.domain.impedance_matrices.entities.impedance_matrix_source_type import (
+    ImpedanceMatrixSourceType,
+)
+from src.domain.impedance_matrices.entities.impedance_type import ImpedanceType
+from src.domain.impedance_matrices.use_cases.get_impedance_matrix_from_source import (
+    GetImpedanceMatrixFromSource,
+)
+from src.domain.oportunities.entities.oportunities_source_type import (
+    OportunitiesSourceType,
+)
 from src.domain.oportunities.use_cases.get_from_source import GetOportunitiesFromSource
 from src.domain.transport_modes import TransportMode
 
@@ -21,10 +33,12 @@ class AccessibilityCalculator:
         get_accessibility_by_zone: GetAccessibilityByZone,
         get_impedance_matrix_from_source: GetImpedanceMatrixFromSource,
         get_oportunities_from_source: GetOportunitiesFromSource,
+        save_accessibility_by_zone_to_file: SaveAccessibilityByZoneToFile,
     ):
         self.get_accessibility_by_zone = get_accessibility_by_zone
         self.get_impedance_matrix_from_source = get_impedance_matrix_from_source
         self.get_oportunities_from_source = get_oportunities_from_source
+        self.save_accessibility_by_zone_to_file = save_accessibility_by_zone_to_file
 
     def _get_impedance_matrix(
         self,
@@ -65,3 +79,10 @@ class AccessibilityCalculator:
             impedance_matrix, oportunities_by_zone, accessibility_type, umbral
         )
         return accessibility
+
+    def save_to_file(
+        self,
+        accessibility_by_zone,
+        output_file: Path,
+    ):
+        self.save_accessibility_by_zone_to_file.save(accessibility_by_zone, output_file)

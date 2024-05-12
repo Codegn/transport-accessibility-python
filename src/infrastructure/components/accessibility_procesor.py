@@ -1,8 +1,10 @@
 from datetime import timedelta
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
-from src.domain.accessibility.entities.accessibility import Accessibility, AccessibilityOportunity
+from src.domain.accessibility.entities.accessibility import Accessibility
 from src.domain.accessibility.entities.accessibility_by_zone import AccessibilityByZone
 from src.domain.accessibility_types import AccessibilityType
 from src.domain.impedance_matrices.entities.distance import Distance
@@ -34,7 +36,8 @@ class AccessibilityProcessor:
     def _df_to_accessibility_by_zone(self, df: pd.DataFrame) -> AccessibilityByZone:
 
         accessibility_by_zone_dict = {
-            Zone(int(float(row[ORIGIN_ZONE_COLUMN]))): Accessibility(row[OPORTUNITIES_COLUMN]) for _, row in df.iterrows()
+            Zone(int(float(row[ORIGIN_ZONE_COLUMN]))): Accessibility(row[OPORTUNITIES_COLUMN])
+            for _, row in df.iterrows()
         }
         return AccessibilityByZone(accessibility_by_zone_dict)
 
@@ -74,3 +77,10 @@ class AccessibilityProcessor:
             return accessibility_by_zone
 
         raise NotImplementedError
+
+    def save_accessibility_by_zone_to_file(self, accessibility_by_zone: AccessibilityByZone, output_file: Path):
+
+        with open(output_file, "w") as f:
+            f.write("zone_id,accessibility\n")
+            for zone, accessibility in accessibility_by_zone.data.items():
+                f.write(f"{zone.id},{accessibility.value}\n")

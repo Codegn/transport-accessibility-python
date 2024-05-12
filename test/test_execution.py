@@ -1,7 +1,6 @@
-from datetime import timedelta
 import unittest
 
-from local_paths import example_vs_matrix_path, example_orides_path, output_folder
+from local_paths import example_orides_path, example_vs_matrix_path, output_path
 from src.domain.accessibility_types import AccessibilityType
 from src.domain.impedance_matrices.entities.impedance_type import ImpedanceType
 from src.domain.transport_modes import TransportMode
@@ -13,9 +12,9 @@ class TestAppExecution(unittest.TestCase):
         calculate_acc_from_orides_and_sv_matrix(
             example_vs_matrix_path,
             example_orides_path,
-            output_folder,
+            output_path,
+            30,
             AccessibilityType.UMBRAL,
-            timedelta(minutes=30),
             ImpedanceType.TIME,
             TransportMode.PUBLIC,
         )
