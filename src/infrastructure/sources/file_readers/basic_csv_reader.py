@@ -1,7 +1,8 @@
+from pathlib import Path
 import pandas as pd
 
 class BasicCSVReader:
-    def __init__(self, file_path):
+    def __init__(self, file_path: Path):
         self.file_path = file_path
         self.df = None
 
@@ -10,3 +11,4 @@ class BasicCSVReader:
         Reads a CSV file into a pandas DataFrame.
         """
         self.df = pd.read_csv(self.file_path)
+        
